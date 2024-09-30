@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <style>
+        .search-bar {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .search-bar input {
+            width: 50%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #movies {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #movies img {
+            width: 200px;
+            height: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-bar">
+        <input type="search" id="SEARCH-BAR" placeholder="Enter movie title..."><br>
+        <button class="btn" onclick="RESULT()">SEARCH</button>
+    </div>
+
+    <div id="movies"></div> 
+
+    <script>
+        function RESULT() {
+            let res = document.getElementById("SEARCH-BAR").value;
+            fetch(`https://www.omdbapi.com/?t=${res}&apikey=8ea2d57`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.Response === "True") {
+                    let { Title, Poster, Year, Rated, Released, Genre } = data;
+                    document.getElementById("movies").innerHTML = `
+                        <h2>${Title} (${Year})</h2>
+                        <img src="${Poster}" alt="${Title}">
+                        <ul>
+                            <li><strong>Rated:</strong> ${Rated}</li>
+                            <li><strong>Released:</strong> ${Released}</li>
+                            <li><strong>Genre:</strong> ${Genre}</li>
+                        </ul>
+                    `;
+                } else {
+                    document.getElementById("movies").innerHTML = `<p>Movie not found. Please try again.</p>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById("movies").innerHTML = `<p>Error fetching data. Please try again later.</p>`;
+            });
+        }
+    </script>
+
+</body>
+</html>
